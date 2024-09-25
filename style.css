@@ -1,0 +1,54 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+}
+
+.keyboard-container {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    background-color: #f0f0f0;
+    white-space: nowrap;
+    display: flex;
+    justify-content: center;
+}
+
+.keyboard {
+    display: inline-flex;
+    position: relative;
+    height: 200px;
+    width: max-content;
+}
+
+.key {
+    height: 100%;
+    border: 1px solid #000;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+}
+
+.key.white {
+    background-color: white;
+    width: 60px; /* White keys are twice the size of black keys */
+    z-index: 1;
+}
+
+.key.black {
+    background-color: black;
+    width: 30px; /* Black keys are half the size of white keys */
+    height: 120px; /* Black keys are shorter */
+    position: absolute;
+    z-index: 2;
+    margin-left: -10px;
+}
+
+.key.pressed {
+    transform: translateY(4px); /* Pressed key animation */
+    background-color: lightgrey; /* Change color to indicate it's pressed */
+}
