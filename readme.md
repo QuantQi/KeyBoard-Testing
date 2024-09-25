@@ -10,15 +10,6 @@ This application is a web-based MIDI keyboard that allows users to interact with
 - **Real-Time Feedback**: If the wrong key is pressed, it flashes red, and the correct key remains highlighted in yellow.
 - **Responsive Design**: Works on both desktop and mobile browsers.
 
-## Technologies Used
-
-- **HTML5**: Structure and layout of the app.
-- **CSS3**: Styling and layout, including dynamic highlighting of keys.
-- **JavaScript**: Handling keyboard events, MIDI input, and test logic.
-- **Web MIDI API**: Used to connect and interact with a physical MIDI keyboard.
-
-## Getting Started
-
 ### Prerequisites
 
 - **Web Browser**: A browser that supports the Web MIDI API (e.g., Google Chrome).
