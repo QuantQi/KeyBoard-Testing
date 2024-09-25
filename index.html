@@ -7,10 +7,23 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="header-container">
+        <h1>MIDI Keyboard (88 Keys)</h1>
+        <div id="instruction">Press the key:</div>
+        <!-- Timer display for the 5-minute countdown -->
+        <div id="timer">05:00</div>
+    </div>
+    
     <div class="keyboard-container">
         <div class="keyboard" id="keyboard"></div>
     </div>
 
+    <!-- MIDI player information at the bottom -->
+    <div class="footer-container">
+        <p id="midi-info">No MIDI player connected</p>
+    </div>
+
     <script src="script.js"></script>
+    <script src="test.js"></script>
 </body>
 </html>

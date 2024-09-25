@@ -1,6 +1,7 @@
 const keyPattern = 'wbwwbwbwwbwb';  // Key pattern to repeat for octaves
 const totalKeys = 88;  // Total number of keys for the keyboard
 const keyboardElement = document.getElementById('keyboard');
+const midiInfoElement = document.getElementById('midi-info');  // New element to display MIDI player info
 
 let whiteKeyCount = 0;
 const keys = [];  // Array to store all the key elements
@@ -16,10 +17,10 @@ function createKey(type, note) {
         whiteKeyCount++;
     }
 
-    // Add click event to play sound and animate the key
+    // Add click event to check key press (without sound)
     key.addEventListener('click', () => {
-        playSound(note);
         animateKeyPress(key);
+        checkKeyPress(note);  // Ensure this is called on manual clicks
     });
 
     keys.push(key);  // Store key in array for later access
@@ -52,12 +53,6 @@ function releaseKey(key) {
     key.classList.remove('pressed');
 }
 
-// Function to play sound
-function playSound(note) {
-    const audio = new Audio(`sounds/note-${note}.mp3`);  // Assuming sounds are stored in a 'sounds' folder
-    audio.play();
-}
-
 // MIDI Input Setup
 if (navigator.requestMIDIAccess) {
     navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
@@ -66,30 +61,53 @@ if (navigator.requestMIDIAccess) {
 }
 
 function onMIDISuccess(midiAccess) {
+    console.log('MIDI Access successful');
     const inputs = midiAccess.inputs;
-    inputs.forEach(input => {
-        input.onmidimessage = handleMIDIMessage;
-    });
+
+    if (inputs.size > 0) {
+        let midiPlayerInfo = 'Connected MIDI devices: ';
+        inputs.forEach(input => {
+            console.log(`Connecting to: ${input.name}`);
+            midiPlayerInfo += `${input.name} `;
+            input.onmidimessage = handleMIDIMessage;  // Ensure MIDI messages are being handled
+        });
+        midiInfoElement.textContent = midiPlayerInfo;  // Update the information in the footer
+    } else {
+        midiInfoElement.textContent = 'No MIDI player connected';
+    }
 }
 
 function onMIDIFailure() {
     console.error('Could not access your MIDI devices.');
+    midiInfoElement.textContent = 'Failed to connect to MIDI player';
 }
 
 // Handle incoming MIDI messages
 function handleMIDIMessage(event) {
     const [type, note, velocity] = event.data;
+    console.log(`MIDI message received: type=${type}, note=${note}, velocity=${velocity}`);
 
     if (type === 144 && velocity > 0) {  // Note On
         const key = keys.find(k => k.dataset.note == note);
         if (key) {
-            playSound(note);
-            animateKeyPress(key);
+            animateKeyPress(key);  // Animate the correct key press
+            checkKeyPress(note);   // Call checkKeyPress when the key is pressed via MIDI
         }
     } else if (type === 128 || (type === 144 && velocity === 0)) {  // Note Off
         const key = keys.find(k => k.dataset.note == note);
         if (key) {
             releaseKey(key);  // Release the key when note is released
         }
+    }
+}
+
+// Function to flash wrong key red
+function flashWrongKey(note) {
+    const wrongKey = keys.find(k => k.dataset.note == note);
+    if (wrongKey) {
+        wrongKey.classList.add('wrong');
+        setTimeout(() => {
+            wrongKey.classList.remove('wrong');
+        }, 500);  // Flash red for 500ms
     }
 }

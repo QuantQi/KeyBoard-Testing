@@ -1,22 +1,48 @@
+/* Timer styling */
+#timer {
+    font-size: 1.5em;
+    margin-top: 10px;
+    color: #333;
+}
+
+/* Other existing styles */
 body {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
     height: 100vh;
     background-color: #f0f0f0;
 }
 
+/* Header and instruction container */
+.header-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+h1 {
+    margin: 0;
+    font-size: 2em;
+}
+
+#instruction {
+    font-size: 1.5em;
+    margin-top: 10px;
+}
+
+/* Keyboard container style */
 .keyboard-container {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
     background-color: #f0f0f0;
-    white-space: nowrap;
-    display: flex;
-    justify-content: center;
 }
 
 .keyboard {
@@ -49,6 +75,25 @@ body {
 }
 
 .key.pressed {
-    transform: translateY(4px); /* Pressed key animation */
-    background-color: lightgrey; /* Change color to indicate it's pressed */
+    transform: translateY(4px);
+    background-color: lightgrey;
+}
+
+.key.correct {
+    background-color: yellow !important;
+}
+
+.key.wrong {
+    background-color: red !important;
+}
+
+/* Footer for MIDI info */
+.footer-container {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#midi-info {
+    font-size: 1em;
+    color: #555;
 }
