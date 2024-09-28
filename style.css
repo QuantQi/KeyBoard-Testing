@@ -1,39 +1,95 @@
-/* Timer styling */
-#timer {
-    font-size: 1.5em;
-    margin-top: 10px;
-    color: #333;
-}
-
-/* Other existing styles */
+/* General Body Styling */
 body {
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', Arial, sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
     height: 100vh;
-    background-color: #f0f0f0;
+    background-color: #f4f4f9;
+    color: #333;
 }
 
-/* Header and instruction container */
+/* Header and Instruction Container */
 .header-container {
     text-align: center;
     margin-top: 20px;
+    width: 100%;
 }
 
+/* Main Title Styling */
 h1 {
     margin: 0;
-    font-size: 2em;
+    font-size: 2.5em;
+    color: #4CAF50;
+    font-weight: 700;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-#instruction {
-    font-size: 1.5em;
+/* Melody Name Display */
+#melody-name {
+    font-size: 1.8em;
+    color: #555;
     margin-top: 10px;
+    font-weight: 500;
 }
 
-/* Keyboard container style */
+/* Radio Buttons for Melody Selection */
+.melody-selection {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.melody-selection label {
+    font-size: 1.2em;
+    margin-right: 15px;
+    color: #555;
+}
+
+.melody-selection input[type="radio"] {
+    margin-right: 5px;
+}
+
+/* Timer Styling */
+#timer {
+    font-size: 1.5em;
+    margin-top: 15px;
+    color: #333;
+}
+
+/* Button Styling */
+#next-melody-button {
+    padding: 10px 25px;
+    font-size: 1.2em;
+    margin-top: 20px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+#next-melody-button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+#next-melody-button:active {
+    background-color: #3e8e41;
+    transform: scale(0.98);
+}
+
+#next-melody-button .material-icons {
+    margin-right: 10px;
+    font-size: 1.5em;
+}
+
+/* Keyboard Container Styling */
 .keyboard-container {
     flex-grow: 1;
     display: flex;
@@ -42,9 +98,12 @@ h1 {
     width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
-    background-color: #f0f0f0;
+    background-color: #e0e0e0;
+    padding: 20px;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Keyboard Styling */
 .keyboard {
     display: inline-flex;
     position: relative;
@@ -52,48 +111,103 @@ h1 {
     width: max-content;
 }
 
-.key {
-    height: 100%;
-    border: 1px solid #000;
-    cursor: pointer;
-    transition: transform 0.1s ease;
-}
-
+/* White Key Styling */
 .key.white {
-    background-color: white;
-    width: 60px; /* White keys are twice the size of black keys */
+    background-color: #fff;
+    width: 60px;  /* White keys are wider */
+    height: 100%;
+    border: 1px solid #bbb;
     z-index: 1;
+    cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
 
-.key.black {
-    background-color: black;
-    width: 30px; /* Black keys are half the size of white keys */
-    height: 120px; /* Black keys are shorter */
-    position: absolute;
-    z-index: 2;
-    margin-left: -10px;
-}
-
-.key.pressed {
+.key.white.pressed {
     transform: translateY(4px);
-    background-color: lightgrey;
+    box-shadow: inset 0px 4px 6px rgba(0, 0, 0, 0.2);
+    background-color: #f4f4f4;
 }
 
-.key.correct {
+/* Black Key Styling */
+.key.black {
+    background-color: #333;
+    width: 30px;
+    height: 120px;
+    position: absolute;
+    margin-left: -15px;
+    border: none;
+    z-index: 2;
+    cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.key.black.pressed {
+    transform: translateY(4px);
+    box-shadow: inset 0px 4px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* Note Label Above the Key */
+.note-label {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.9em;
+    color: #333;
+}
+
+/* Highlight for Right and Left Hand Notes */
+.key.correct-right {
     background-color: yellow !important;
 }
 
+.key.correct-left {
+    background-color: lightblue !important;
+}
+
+/* Note Display Styling for Right and Left Hand */
+#right-hand-display, #left-hand-display {
+    text-align: center;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    margin-top: 30px;
+}
+
+#right-hand-display {
+    color: #333;  /* Right-hand notes */
+}
+
+#left-hand-display {
+    color: #666;  /* Left-hand notes */
+}
+
+/* Styling for Individual Notes */
+.note {
+    display: inline-block;
+    margin: 0 10px;
+    font-weight: normal;
+    font-size: 1.2em;
+}
+
+/* Highlighting the Active Note */
+.note.highlight {
+    background-color: yellow;  /* Highlight the note */
+    font-weight: bold;
+    border-radius: 5px;
+    padding: 0 5px;
+}
+
+/* Highlight wrong key press */
 .key.wrong {
     background-color: red !important;
 }
 
-/* Footer for MIDI info */
+/* Footer for MIDI Info */
 .footer-container {
     text-align: center;
-    margin-bottom: 10px;
-}
-
-#midi-info {
-    font-size: 1em;
-    color: #555;
+    padding: 10px;
+    font-size: 0.9em;
+    color: #888;
+    background-color: #f0f0f0;
+    width: 100%;
 }

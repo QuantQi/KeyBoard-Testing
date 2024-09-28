@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scrollable MIDI Keyboard</title>
@@ -9,7 +10,26 @@
 <body>
     <div class="header-container">
         <h1>MIDI Keyboard (88 Keys)</h1>
-        <div id="instruction">Press the key:</div>
+
+            <!-- New section to display the melody name -->
+         <h2 id="melody-name">Melody: None</h2>
+
+             <!-- Add the button to manually select the next melody -->
+        <!-- Button to select the next melody with a material icon -->
+        <button id="next-melody-button">
+            <span class="material-icons">skip_next</span> Next Melody
+        </button>
+
+        <!-- Melody type selection with radio buttons -->
+        <div class="melody-selection">
+            <label><input type="radio" name="melodyType" value="bothHands" checked> Both Hands</label>
+            <label><input type="radio" name="melodyType" value="leftHand"> Left Hand Only</label>
+            <label><input type="radio" name="melodyType" value="rightHand"> Right Hand Only</label>
+        </div>
+
+        <!-- Display the right hand and left hand notes -->
+        <div id="right-hand-display"></div>  <!-- Right hand notes -->
+        <div id="left-hand-display"></div>   <!-- Left hand notes -->
         <!-- Timer display for the 5-minute countdown -->
         <div id="timer">05:00</div>
     </div>
@@ -23,6 +43,11 @@
         <p id="midi-info">No MIDI player connected</p>
     </div>
 
+
+    <script src="melodies.js"></script>
+    <script src="bothHandsMelodies.js"></script>
+    <script src="leftHandMelodies.js"></script>
+    <script src="rightHandMelodies.js"></script>
     <script src="script.js"></script>
     <script src="test.js"></script>
 </body>

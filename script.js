@@ -12,6 +12,13 @@ function createKey(type, note) {
     key.classList.add('key', type);
     key.dataset.note = note;  // Assign the MIDI note number to the key
 
+    // Display the note name above the key
+    const noteName = noteNames[note];
+    const label = document.createElement('div');
+    label.classList.add('note-label');
+    label.textContent = noteName;  // Show the note name
+    key.appendChild(label);
+
     if (type === 'white') {
         key.style.left = `${whiteKeyCount * 60}px`;
         whiteKeyCount++;
@@ -85,7 +92,7 @@ function onMIDIFailure() {
 // Handle incoming MIDI messages
 function handleMIDIMessage(event) {
     const [type, note, velocity] = event.data;
-    console.log(`MIDI message received: type=${type}, note=${note}, velocity=${velocity}`);
+    //console.log(`MIDI message received: type=${type}, note=${note}, velocity=${velocity}`);
 
     if (type === 144 && velocity > 0) {  // Note On
         const key = keys.find(k => k.dataset.note == note);
@@ -109,5 +116,28 @@ function flashWrongKey(note) {
         setTimeout(() => {
             wrongKey.classList.remove('wrong');
         }, 500);  // Flash red for 500ms
+    }
+}
+
+// Function to check if the user pressed the correct key (previously in test.js)
+let beatProcessed = false;  // Flag to prevent skipping repeated beats
+
+function checkKeyPress(note) {
+    if (currentBeatIndex >= currentMelody.beats.length) {
+        console.error(`No beat found at index ${currentBeatIndex}`);
+        return;  // Stop further processing if there are no more beats
+    }
+
+    const currentBeat = currentMelody.beats[currentBeatIndex];
+    const { rightHand, leftHand } = currentBeat;
+
+    console.log(`Current beat: Right hand: ${rightHand}, Left hand: ${leftHand}`);
+
+    if (note === rightHand || note === leftHand) {
+        console.log('Correct note played');
+        setNextBeat();  // Move to the next beat if the correct note is played
+    } else {
+        console.log('Incorrect note played');
+        flashWrongKey(note);
     }
 }

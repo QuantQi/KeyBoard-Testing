@@ -1,46 +1,121 @@
-let currentTestKey = null;  // The note the user is supposed to press
-let instructionElement = document.getElementById('instruction');
-let timerElement = document.getElementById('timer');  // Timer element to display time
-let testDuration = 5 * 60 * 1000;  // Total test duration (5 minutes in milliseconds)
+let currentMelody = null;  // The melody being played
+let currentBeatIndex = 0;  // The index of the current beat in the melody
+let rightHandDisplay = document.getElementById('right-hand-display');  // Right hand notes display element
+let leftHandDisplay = document.getElementById('left-hand-display');  // Left hand notes display element
+let timerElement = document.getElementById('timer');
+let testDuration = 5 * 60 * 1000;  // 5 minutes in milliseconds
 let startTime = null;
 let testInterval = null;
+let selectedMelodyType = 'bothHands';  // Default selection for melody type
+let currentMelodyIndex = 0;  // Track the index of the current melody
 
-// Function to randomly select a key and give instruction
-function setNextInstruction() {
-    // Remove the highlight from the current correct key if it exists
-    keys.forEach(key => key.classList.remove('correct'));
 
-    // Randomly select the next key to press
-    const randomIndex = Math.floor(Math.random() * keys.length);
-    currentTestKey = keys[randomIndex].dataset.note;
+// Add event listener to update melody type based on radio button selection
+document.querySelectorAll('input[name="melodyType"]').forEach(radio => {
+    radio.addEventListener('change', function () {
+        selectedMelodyType = this.value;
+        currentMelodyIndex = 0;  // Reset to the first melody of the selected type
+        setNextMelody();
+    });
+});
 
-    // Update the instruction text to show the next note number
-    instructionElement.textContent = `Press the key: ${currentTestKey}`;
+// Function to randomly select a melody and reset the beat index
 
-    // Highlight the correct key with yellow
-    const correctKey = keys.find(key => key.dataset.note == currentTestKey);
-    if (correctKey) {
-        correctKey.classList.add('correct');
+// Function to set the next melody
+function setNextMelody() {
+    const melodyList = melodies[selectedMelodyType];  // Choose based on melody type (left, right, both)
+
+    // Ensure the currentMelodyIndex doesn't exceed the melody list length
+    if (currentMelodyIndex >= melodyList.length) {
+        currentMelodyIndex = 0;  // Loop back to the first melody if we reach the end
+    }
+
+    currentMelody = melodyList[currentMelodyIndex];  // Select the next melody
+    currentBeatIndex = 0;  // Reset the beat index
+
+    console.log(`New melody selected: ${currentMelody.name}`);
+
+    // Display the name of the selected melody
+    const melodyNameElement = document.getElementById('melody-name');
+    melodyNameElement.innerText = `Melody: ${currentMelody.name}`;
+
+    // Display the entire melody
+    displayMelody(currentMelody);
+
+    // Start the first beat
+    setNextBeat();
+}
+
+// Add event listener to the Next Melody button
+document.getElementById('next-melody-button').addEventListener('click', () => {
+    currentMelodyIndex++;  // Move to the next melody
+    setNextMelody();  // Select and play the next melody
+});
+
+function displayMelody(melody) {
+    rightHandDisplay.innerHTML = '';  // Clear previous right-hand notes
+    leftHandDisplay.innerHTML = '';   // Clear previous left-hand notes
+
+    melody.beats.forEach((beat, index) => {
+        const { rightHand, leftHand } = beat;
+
+        // Right-hand notes
+        if (rightHand !== undefined) {
+            const rightHandElement = document.createElement('span');
+            rightHandElement.classList.add('note', 'right');  // Add 'right' class
+            rightHandElement.textContent = rightHand !== null ? noteNames[rightHand] : 'Rest';
+            rightHandElement.id = `right-hand-${index}`;  // Ensure unique ID for right hand
+            rightHandDisplay.appendChild(rightHandElement);
+        }
+
+        // Left-hand notes
+        if (leftHand !== undefined) {
+            const leftHandElement = document.createElement('span');
+            leftHandElement.classList.add('note', 'left');  // Add 'left' class
+            leftHandElement.textContent = leftHand !== null ? noteNames[leftHand] : 'Rest';
+            leftHandElement.id = `left-hand-${index}`;  // Ensure unique ID for left hand
+            leftHandDisplay.appendChild(leftHandElement);  // Append to left-hand display
+        }
+    });
+}
+
+function setNextBeat() {
+    if (currentBeatIndex < currentMelody.beats.length) {
+        const { rightHand, leftHand } = currentMelody.beats[currentBeatIndex];
+        console.log(`Setting beat: Right hand: ${rightHand}, Left hand: ${leftHand}`);
+
+        // Highlight right-hand notes
+        highlightCurrentNote('right', currentBeatIndex);
+
+        // Highlight left-hand notes
+        highlightCurrentNote('left', currentBeatIndex);
+
+        currentBeatIndex++;  // Move to the next beat after highlighting
+        console.log(`Next beat index: ${currentBeatIndex}`);
+    } else {
+        // Melody has finished, so select the next melody
+        console.log('Melody completed. Moving to next melody.');
+        currentMelodyIndex++;  // Move to the next melody
+        setNextMelody();  // Select and play the next melody
     }
 }
 
-// Function to check if the user pressed the correct key
-function checkKeyPress(note) {
-    const correctKey = keys.find(key => key.dataset.note == currentTestKey);
-    console.log('checkKeyPress function called with note:', note);
-    if (note == currentTestKey) {
-        // If the correct key is pressed, remove highlight and move to the next instruction
-        correctKey.classList.remove('correct');
-        setNextInstruction();  // Call the next instruction
+// Function to highlight the current note in the display
+function highlightCurrentNote(hand, index) {
+    console.log(`Highlighting ${hand} hand note at index ${index}`);
+
+    // Clear all highlights for the specific hand (right or left)
+    document.querySelectorAll(`.note.${hand}.highlight`).forEach(note => {
+        note.classList.remove('highlight');
+    });
+
+    // Find and highlight the note for the specified hand (right or left)
+    const currentNote = document.getElementById(`${hand}-hand-${index}`);
+    if (currentNote) {
+        currentNote.classList.add('highlight');
+      //  console.log(`${hand} hand note at index ${index} is highlighted`);
     } else {
-        // If the wrong key is pressed, flash it red
-        const wrongKey = keys.find(key => key.dataset.note == note);
-        if (wrongKey) {
-            wrongKey.classList.add('wrong');
-            setTimeout(() => {
-                wrongKey.classList.remove('wrong');
-            }, 500);
-        }
+     //   console.log(`No note found for ${hand} hand at index ${index}`);
     }
 }
 
@@ -53,8 +128,8 @@ function startTestTimer() {
 
         if (remainingTime <= 0) {
             clearInterval(testInterval);
-            instructionElement.textContent = "Test Completed!";
-            keys.forEach(key => key.classList.remove('correct'));
+            rightHandDisplay.textContent = "Test Completed!";
+            leftHandDisplay.textContent = "";
             timerElement.textContent = "00:00";
             return;
         }
@@ -62,11 +137,12 @@ function startTestTimer() {
         let minutes = Math.floor(remainingTime / (60 * 1000));
         let seconds = Math.floor((remainingTime % (60 * 1000)) / 1000);
 
-        // Display the remaining time in MM:SS format
         timerElement.textContent = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     }, 1000);
 }
 
-// Start the first test and the timer
-setNextInstruction();
-startTestTimer();
+// Start the first melody and the timer
+window.onload = function() {
+    setNextMelody();
+    startTestTimer();
+};
